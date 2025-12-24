@@ -1,64 +1,50 @@
 function generateDocx(mk, semester, dosen) {
-  // pastikan library docx sudah ada
-  if (typeof docx === "undefined") {
-    alert("Library DOCX belum termuat. Refresh halaman.");
-    return;
-  }
 
-  const {
-    Document,
-    Packer,
-    Paragraph,
-    HeadingLevel
-  } = docx;
+  let html = `
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>RPS & RPP</title>
+  </head>
+  <body>
+    <h1 style="text-align:center;">RPS & RPP</h1>
 
-  let content = [];
+    <p><strong>Mata Kuliah:</strong> ${mk}</p>
+    <p><strong>Semester:</strong> ${semester.replace("semester","")}</p>
+    <p><strong>Dosen:</strong> ${dosen || "-"}</p>
 
-  // Judul
-  content.push(
-    new Paragraph({
-      text: "RPS & RPP",
-      heading: HeadingLevel.HEADING_1,
-      alignment: "center"
-    })
-  );
+    <h2>Rencana Pembelajaran</h2>
+  `;
 
-  content.push(new Paragraph(`Mata Kuliah: ${mk}`));
-  content.push(new Paragraph(`Semester: ${semester.replace("semester", "")}`));
-  content.push(new Paragraph(`Dosen: ${dosen || "-"}`));
-  content.push(new Paragraph(""));
-
-  // 16 pertemuan
   for (let i = 1; i <= 16; i++) {
     const level = soloLevel(i);
 
-    content.push(
-      new Paragraph({
-        text: `Pertemuan ${i}`,
-        heading: HeadingLevel.HEADING_2
-      })
-    );
+    html += `<h3>Pertemuan ${i}</h3>`;
 
     if (typeof level !== "number") {
-      content.push(new Paragraph(`Evaluasi: ${level}`));
+      html += `<p><strong>Evaluasi:</strong> ${level}</p>`;
       continue;
     }
 
-    content.push(new Paragraph(`Level SOLO: ${level}`));
-    content.push(new Paragraph(`🇮🇩 Pembelajaran level SOLO ${level} pada ${mk}.`));
-    content.push(new Paragraph(`🇸🇦 تحقيق مستوى SOLO ${level} في مقرر ${mk}.`));
-    content.push(new Paragraph(`Asesmen: ${rubrikSOLO(level)}`));
-    content.push(new Paragraph(""));
+    html += `
+      <p><strong>Level SOLO:</strong> ${level}</p>
+      <p><strong>Tujuan (ID):</strong> Mahasiswa mencapai level SOLO ${level} pada ${mk}.</p>
+      <p><strong>Tujuan (AR):</strong> تحقيق مستوى SOLO ${level} في مقرر ${mk}.</p>
+      <p><strong>Asesmen:</strong> ${rubrikSOLO(level)}</p>
+    `;
   }
 
-  const doc = new Document({
-    sections: [{ children: content }]
+  html += `
+  </body>
+  </html>
+  `;
+
+  const blob = new Blob([html], {
+    type: "application/msword"
   });
 
-  Packer.toBlob(doc).then(blob => {
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `RPS_RPP_${mk.replace(/\s+/g, "_")}.docx`;
-    link.click();
-  });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `RPS_RPP_${mk.replace(/\s+/g, "_")}.docx`;
+  link.click();
 }
