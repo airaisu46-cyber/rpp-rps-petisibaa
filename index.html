@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Generator RPS & RPP Ma'had Aly / S1</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/docx@8.2.2/build/index.js"></script>
+</head>
+<body>
+
+<h1>📘 Generator RPS & RPP (Bilingual Arab–Indonesia)</h1>
+
+<label>Semester:</label>
+<select id="semester">
+  <option value="semester1">Semester 1</option>
+  <option value="semester2">Semester 2</option>
+  <option value="semester3">Semester 3</option>
+  <option value="semester4">Semester 4</option>
+  <option value="semester5">Semester 5</option>
+  <option value="semester6">Semester 6</option>
+</select>
+
+<label>Mata Kuliah:</label>
+<select id="mataKuliah"></select>
+
+<label>Nama Dosen:</label>
+<input type="text" id="dosen" placeholder="Nama Dosen">
+
+<button onclick="generate()">📄 Generate RPS + RPP (Word)</button>
+
+<script src="data.js"></script>
+<script src="solo.js"></script>
+<script src="rubrik.js"></script>
+<script src="generator.js"></script>
+<script src="docx-generator.js"></script>
+
+</body>
+</html>
