@@ -1,40 +1,60 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Generator RPS & RPP Ma'had Aly / S1</title>
-  <link rel="stylesheet" href="style.css">
- 
-</head>
+function generateDocx(mk, semester, dosen) {
 
-</head>
-<body>
+  let html = `
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>RPS & RPP</title>
+    <style>
+      body { font-family: Times New Roman; margin: 40px; }
+      h1, h2, h3 { text-align: center; }
+      h3 { text-align: left; margin-top: 30px; }
+      p { text-align: justify; }
+      hr { margin: 20px 0; }
+    </style>
+  </head>
+  <body>
 
-<h1>📘 Generator RPS & RPP (Bilingual Arab–Indonesia)</h1>
+    <h1>RPS & RPP</h1>
 
-<label>Semester:</label>
-<select id="semester">
-  <option value="semester1">Semester 1</option>
-  <option value="semester2">Semester 2</option>
-  <option value="semester3">Semester 3</option>
-  <option value="semester4">Semester 4</option>
-  <option value="semester5">Semester 5</option>
-  <option value="semester6">Semester 6</option>
-</select>
+    <p><strong>Mata Kuliah:</strong> ${mk}</p>
+    <p><strong>Semester:</strong> ${semester.replace("semester","")}</p>
+    <p><strong>Dosen:</strong> ${dosen || "-"}</p>
 
-<label>Mata Kuliah:</label>
-<select id="mataKuliah"></select>
+    <hr>
 
-<label>Nama Dosen:</label>
-<input type="text" id="dosen" placeholder="Nama Dosen">
+    <h2>Rencana Pembelajaran Semester</h2>
+  `;
 
-<button id="btnGenerate">📄 Generate RPS + RPP (Word)</button>
- 
-<script src="data.js"></script>
-<script src="solo.js"></script>
-<script src="rubrik.js"></script>
-<script src="generator.js"></script>
-<script src="docx-generator.js"></script>
+  for (let i = 1; i <= 16; i++) {
+    const level = soloLevel(i);
 
-</body>
-</html>
+    html += `<h3>Pertemuan ${i}</h3>`;
+
+    if (typeof level !== "number") {
+      html += `<p><strong>Evaluasi:</strong> ${level}</p>`;
+      continue;
+    }
+
+    html += `
+      <p><strong>Level SOLO:</strong> ${level}</p>
+      <p><strong>Tujuan (Indonesia):</strong> Mahasiswa mencapai level SOLO ${level} pada ${mk}.</p>
+      <p><strong>Tujuan (Arab):</strong> تحقيق مستوى SOLO ${level} في مقرر ${mk}.</p>
+      <p><strong>Penilaian:</strong> ${rubrikSOLO(level)}</p>
+    `;
+  }
+
+  html += `
+    <script>
+      window.onload = function() {
+        window.print();
+      }
+    </script>
+  </body>
+  </html>
+  `;
+
+  const win = window.open("", "_blank");
+  win.document.write(html);
+  win.document.close();
+}
